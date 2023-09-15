@@ -5,8 +5,8 @@
 
 import os
 
-TAG = 'release-2.24.2'
-HASH = 'b178bdc8f7c40271e09a72f639649d1d61953dda4dc12b77437259667b63b961fd3b2c67b0de6fdc5f9f9c80c49bfafd164e4c13715bc1056e550acc8bad5a3c'
+TAG = '70a2ac2f1c1ce6509252ae588ba54fff31063f32'
+HASH = 'd30504d96456ac5c9f9c279e7d6f3ee961d287db303f4c2f51df07d3a4d1e4f4627e58cbc9a7b058e817efcc3ff13233a8bd88c4c56b627ae4228dc928915748'
 SUBDIR = 'SDL-' + TAG
 
 variants = {'sdl2-mt': {'PTHREADS': 1}}
@@ -79,11 +79,6 @@ def get(ports, settings, shared):
 
 def clear(ports, settings, shared):
   shared.cache.erase_lib(get_lib_name(settings))
-
-
-def linker_setup(ports, settings):
-  # TODO(sbc): Move these into native code use EM_JS_DEPS macro.
-  settings.DEFAULT_LIBRARY_FUNCS_TO_INCLUDE += ['$autoResumeAudioContext', '$dynCall']
 
 
 def process_args(ports):
