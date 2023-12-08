@@ -35,6 +35,8 @@ See docs/process.md for more on how version tagging works.
   dynamically change it after the window has been created by calling
   `glfwSetWindowAttrib(window, GLFW_SCALE_TO_MONITOR, GLFW_TRUE)`. (#20584)
 
+-
+
 3.1.50 - 11/29/23
 -----------------
 - Add a port of mimalloc, a fast and scalable multithreaded allocator. To use
