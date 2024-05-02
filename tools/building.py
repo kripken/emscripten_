@@ -1196,6 +1196,11 @@ def run_binaryen_command(tool, infile, outfile=None, args=None, debug=False, std
 
 
 def run_wasm_opt(infile, outfile=None, args=[], **kwargs):  # noqa
+  # the main wasm-opt invocation sets -Ox appropriately, but we also want to set
+  # the optimize/shrink levels in other invocations, as it affects binary
+  # writing
+  args = args + [f'--optimize-level={settings.OPT_LEVEL}',
+                 f'--shrink-level={settings.SHRINK_LEVEL}']
   return run_binaryen_command('wasm-opt', infile, outfile, args=args, **kwargs)
 
 
