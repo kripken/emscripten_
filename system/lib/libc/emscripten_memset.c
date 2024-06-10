@@ -1,15 +1,6 @@
-#include "emscripten_internal.h" // for emscripten_memset_big
-
-#if defined(__has_feature) && __has_feature(address_sanitizer)
-// build an uninstrumented version of memset
-__attribute__((no_sanitize("address"))) void *__musl_memset(void *str, int c, size_t n);
-__attribute__((no_sanitize("address"))) void *__memset(void *str, int c, size_t n);
-#endif
-
-__attribute__((__weak__)) void *__musl_memset(void *str, int c, size_t n);
-__attribute__((__weak__)) void *__memset(void *str, int c, size_t n);
-
-#ifdef EMSCRIPTEN_OPTIMIZE_FOR_OZ
+// Use the simple/naive version when building with asan. Also use it when we
+// want the smallest output and lack bulk memory (which would be yet smaller).
+#if __has_feature(address_sanitizer) || (defined(EMSCRIPTEN_OPTIMIZE_FOR_OZ) && !defined(__wasm_bulk_memory__))
 
 void *__memset(void *str, int c, size_t n) {
   unsigned char *s = (unsigned char *)str;
@@ -18,12 +9,15 @@ void *__memset(void *str, int c, size_t n) {
   return str;
 }
 
+// Use bulk memory when available, as it is the most compact and VMs can also
+// make it the most efficient.
 #elif defined(__wasm_bulk_memory__)
 
 void *__memset(void *str, int c, size_t n) {
   return _emscripten_memset_bulkmem(str, c, n);
 }
 
+// Otherwise use a fast but large userspace implementation.
 #else
 
 #define memset __memset

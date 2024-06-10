@@ -8,8 +8,9 @@
 #include "libc.h"
 #include "emscripten_internal.h"
 
-// Use the simple/naive version of memcpy when building with asan
-#if defined(EMSCRIPTEN_OPTIMIZE_FOR_OZ) || __has_feature(address_sanitizer)
+// Use the simple/naive version when building with asan. Also use it when we
+// want the smallest output and lack bulk memory (which would be yet smaller).
+#if __has_feature(address_sanitizer) || (defined(EMSCRIPTEN_OPTIMIZE_FOR_OZ) && !defined(__wasm_bulk_memory__))
 
 static void *__memcpy(void *dest, const void *src, size_t n) {
   unsigned char *d = (unsigned char *)dest;
@@ -19,12 +20,15 @@ static void *__memcpy(void *dest, const void *src, size_t n) {
   return dest;
 }
 
+// Use bulk memory when available, as it is the most compact and VMs can also
+// make it the most efficient.
 #elif defined(__wasm_bulk_memory__)
 
 static void *__memcpy(void *restrict dest, const void *restrict src, size_t n) {
   return _emscripten_memcpy_bulkmem(dest, src, n);
 }
 
+// Otherwise use a fast but large userspace implementation.
 #else
 
 static void *__memcpy(void *restrict dest, const void *restrict src, size_t n) {
