@@ -1,3 +1,5 @@
+#include "emscripten_internal.h"
+
 // Use the simple/naive version when building with asan. Also use it when we
 // want the smallest output and lack bulk memory (which would be yet smaller).
 #if __has_feature(address_sanitizer) || (defined(EMSCRIPTEN_OPTIMIZE_FOR_OZ) && !defined(__wasm_bulk_memory__))
