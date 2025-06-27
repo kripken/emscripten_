@@ -298,6 +298,8 @@ def link_lld(args, target, external_symbols=None):
   if '--relocatable' not in args and '-r' not in args:
     cmd += lld_flags_for_executable(external_symbols)
 
+  cmd += ['--no-gc-sections'] # workaround for gcing away a function with a hint
+
   cmd = get_command_with_possible_response_file(cmd)
   check_call(cmd)
 
@@ -1236,6 +1238,7 @@ def run_binaryen_command(tool, infile, outfile=None, args=None, debug=False, std
 
 
 def run_wasm_opt(infile, outfile=None, args=[], **kwargs):  # noqa
+  #1/0
   return run_binaryen_command('wasm-opt', infile, outfile, args=args, **kwargs)
 
 

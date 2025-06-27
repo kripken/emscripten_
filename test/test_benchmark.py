@@ -47,7 +47,7 @@ non_core = unittest.skipIf(CORE_BENCHMARKS, "only running core benchmarks")
 
 OPTIMIZATIONS = '-O3'
 
-PROFILING = 0
+PROFILING = 1
 
 LLVM_FEATURE_FLAGS = ['-mnontrapping-fptoint']
 
@@ -231,7 +231,7 @@ class EmscriptenBenchmarker(Benchmarker):
     utils.delete_file(final)
     cmd = [
       EMCC, filename,
-      OPTIMIZATIONS,
+      '-O1',
       '-sINITIAL_MEMORY=256MB',
       '-sENVIRONMENT=node,shell',
       '-o', final,
