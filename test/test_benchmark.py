@@ -231,7 +231,7 @@ class EmscriptenBenchmarker(Benchmarker):
     utils.delete_file(final)
     cmd = [
       EMCC, filename,
-      '-O1',
+      '-O1', # skip binaryen opts, til we fix them for branch hints
       '-sINITIAL_MEMORY=256MB',
       '-sENVIRONMENT=node,shell',
       '-o', final,
