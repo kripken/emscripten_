@@ -9820,6 +9820,15 @@ NODEFS is no longer included by default; build with -lnodefs.js
     self.assertExists('out.profdata')
     self.assertEqual(expected, self.run_process([LLVM_COV, 'show', 'test_hello_world.wasm', '-instr-profile=out.profdata'], stdout=PIPE).stdout)
 
+  @no_wasm2js('no wasm to find branch hints in')
+  def test_branch_hints(self):
+    # End-to-end test for branch hinting, all the way from source code.
+    if not self.is_optimizing():
+      self.skipTest('clang only emits branch_weights when optimizing')
+    self.do_core_test('test_branch_hints.c')
+    wat = self.get_wasm_text('test_branch_hints.wasm')
+    self.assertContained('@metadata.code.branch_hint', wat)
+
 # Generate tests for everything
 def make_run(name, cflags=None, settings=None, env=None, # noqa
              require_v8=False, v8_args=None,
