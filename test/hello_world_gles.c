@@ -70,6 +70,19 @@ sincos (double a, double *s, double *c)
 }
 #endif
 
+void flush() {
+  double t = emscripten_get_now();
+  if (!t) exit(1); // use the value in a silly way
+
+    /*
+, autobatch: { flush:
+
+
+
+}
+    */
+}
+
 /**
  * Struct describing the vertices in triangle strip
  */
@@ -613,6 +626,8 @@ gears_idle(void)
    double t = 0;
 #endif
 
+   //EM_ASM_INT({ console.log("idle") });
+
    if (tRot0 < 0.0)
       tRot0 = t;
    dt = t - tRot0;
@@ -656,10 +671,12 @@ gears_idle(void)
 #endif
         printf("Done\n");
         emscripten_force_exit(0);
+        flush();
         return;
       }
 #endif
    }
+   flush();
 }
 
 static const char vertex_shader[] =
@@ -783,7 +800,11 @@ main(int argc, char *argv[])
    // reftest immediately after falling out from main.
    EM_ASM({if (typeof reftestBlock !== 'undefined') reftestBlock()});
 #endif
+   flush();
+   EM_ASM_INT({ console.log("pre") });
    glutMainLoop();
+   EM_ASM_INT({ console.log("post") });
+   flush();
 
    return 0;
 }
